@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+div#test{ border:#000 1px solid; padding:10px 40px 40px 40px; }
+</style>
+<script>
+var pos = 0, test, test_status, question, choice, choices, chA, chB, chC, correct = 0, output = '', category;
+var answer = [];
+var questions = [
+    [ "Цена вашего ведерка", "до 300к", "до 600к", "до 1млн" ],
+		[ "Что мы вам предлагаем", ["сига", 1] , ["запуск", 1], ["вебаста", 2], 
+		["замок капота", 2], ["подогревы", 3], ["жпс", 3]],
+		[ "Доп предложения", "дым", "шумка", "кожа"]
+		];
+function _(x){
+	return document.getElementById(x);
+}
+function renderQuestion(){
+	test = _("test");
+
+	if(pos >= questions.length){// вывод в конце
+
+		for(var i = 0; i<answer.length; i++){
+			output += answer[i] + " ";
+		}
+		
+		test.innerHTML = "<h2>"+output+"</h2>";
+
+
+		_("test_status").innerHTML = "Test Completed";
+		pos = 0;
+		correct = 0;
+		return false;
+	}
+	
+	_("test_status").innerHTML = "Question "+(pos+1)+" of "+questions.length;
+
+	if(pos==0||pos==2){
+		question = questions[pos][0];
+		chA = questions[pos][1];
+		chB = questions[pos][2];
+		chC = questions[pos][3];
+		test.innerHTML = "<h3>"+question+"</h3>";
+		test.innerHTML += "<input type='checkbox' name='choices' value=1> "+chA+"<br>";
+		test.innerHTML += "<input type='checkbox' name='choices' value=2> "+chB+"<br>";
+		test.innerHTML += "<input type='checkbox' name='choices' value=3> "+chC+"<br><br>";
+		test.innerHTML += "<button onclick='checkAnswer()'>Submit Answer</button>";
+		}
+
+	if(pos==1){
+		question = questions[pos][0];
+			test.innerHTML = "<h3>"+question+"</h3>";
+
+		for(var i = 1; i < questions[1].length; i++){
+			if(questions[1][i][1] <= category)
+			test.innerHTML += "<input type='checkbox' name='choices' value=3> "+questions[1][i][0]+"<br><br>";
+		}
+
+		test.innerHTML += "<button onclick='checkAnswer()'>Submit Answer</button>";
+
+	}
+}
+function checkAnswer(){
+	choices = document.getElementsByName("choices");
+	for(var i=0; i<choices.length; i++){
+		if(choices[i].checked){
+			
+			if(pos==1)answer.push(questions[pos][i+1][0]);
+			else answer.push(questions[pos][i+1]);
+			
+			if(pos==0){
+				if(i==0)category = 1;
+				else if(i==1)category = 2;
+				else if (i==2)category = 3;
+			}
+		}
+	}
+	
+	
+	pos++;
+	renderQuestion();
+}
+window.addEventListener("load", renderQuestion, false);
+</script>
+</head>
+<body>
+<h2 id="test_status"></h2>
+<div id="test"></div>
+</body>
+</html>
